@@ -7,7 +7,10 @@ import 'package:workout_tracker_app/pages/home_page.dart';
 void main() async {
   //initialize hive
   await Hive.initFlutter();
+<<<<<<< HEAD
   
+=======
+>>>>>>> 73ff6ec456ab508a0bf5eef712ac4d68a5f0f717
 
   //open a hive box
   await Hive.openBox("workout_database1");
