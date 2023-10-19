@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class ExerciseTile extends StatelessWidget {
   final String exerciseName;
   final String weight;
@@ -16,39 +17,33 @@ class ExerciseTile extends StatelessWidget {
     required this.sets,
     required this.isCompleted,
     required this.onCheckBoxChanged,
-    });
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[200],
       child: ListTile(
-          title: Text(
-            exerciseName,
-          ),
-          subtitle: Row(
-            children: [
+        title: Text(
+          exerciseName,
+        ),
+        subtitle: Row(
+          children: [
             Chip(
-              label: Text(
-                  "${weight}kg"
-                ),
-              ),
-            Chip(
-              label: Text(
-                "$reps reps"
-              ),
+              label: Text("${weight}kg"),
             ),
-
             Chip(
-              label: Text(
-                "$sets sets"
-              ),
+              label: Text("$reps reps"),
+            ),
+            Chip(
+              label: Text("$sets sets"),
             ),
           ],
-        ),trailing: Checkbox(
+        ),
+        trailing: Checkbox(
           value: isCompleted,
           onChanged: (value) => onCheckBoxChanged!(value),
-          ),
+        ),
       ),
     );
   }
