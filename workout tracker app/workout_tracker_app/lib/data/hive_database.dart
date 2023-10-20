@@ -36,11 +36,9 @@ class HiveDatabase {
     we will put a 0 or 1 for each yyyymmdd date
 
     */
-    if (exerciseCompleted(workouts)) {
-      _myBox.put("COMPLETION_STATUS_${todaysDateYYYYMMDD()}", 1);
-    } else {
-      _myBox.put("COMPLETION_STATUS_${todaysDateYYYYMMDD()}", 0);
-    }
+    int completedCount = countCompletedExercises(workouts);
+    _myBox.put("COMPLETION_STATUS_${todaysDateYYYYMMDD()}", completedCount);
+
 
     // save into hive
     _myBox.put("WORKOUTS", workoutList);
@@ -85,17 +83,18 @@ class HiveDatabase {
 
 // check if any exercises have been done
 
-  bool exerciseCompleted(List<Workout> workouts) {
+  int countCompletedExercises(List<Workout> workouts) {
+    int count = 0;
     // go through each workout
     for (var workout in workouts) {
       //go through each exercise in workout
       for (var exercise in workout.exercises) {
         if (exercise.isCompleted) {
-          return true;
+          count++;
         }
       }
     }
-    return false;
+    return count;
   }
 
 // return complettionn status of a given date yyyymmdd
@@ -103,6 +102,21 @@ class HiveDatabase {
     // returns 0 or 1, if null then return 0
     int completionStatus = _myBox.get("COMPLETION_STATUS_$yyyymmdd") ?? 0;
     return completionStatus;
+  }
+
+  // Increment the completion status for a given date
+  void incrementCompletionStatus(String yyyymmdd) {
+    int currentStatus = _myBox.get("COMPLETION_STATUS_$yyyymmdd") ?? 0;
+    _myBox.put("COMPLETION_STATUS_$yyyymmdd", currentStatus + 1);
+  }
+
+// Decrement the completion status for a given date
+  void decrementCompletionStatus(String yyyymmdd) {
+    int currentStatus = _myBox.get("COMPLETION_STATUS_$yyyymmdd") ?? 0;
+    if (currentStatus > 0) {
+      // ensure it doesn't go negative
+      _myBox.put("COMPLETION_STATUS_$yyyymmdd", currentStatus - 1);
+    }
   }
 }
 

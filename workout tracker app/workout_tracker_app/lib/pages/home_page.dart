@@ -73,16 +73,46 @@ class _HomePageState extends State<HomePage> {
     newWorkoutNameController.clear();
   }
 
+  Container _buildDismissibleBackground() {
+    return Container(
+      margin: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: const Align(
+        alignment: Alignment.centerRight,
+        child: Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Icon(Icons.delete, color: Colors.white),
+              Text(
+                ' Delete',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<WorkoutData>(
       builder: (context, value, child) => Scaffold(
-        backgroundColor: Colors.grey[400],
+        backgroundColor: Colors.grey[300],
         appBar: AppBar(
-          title: const Text('Workout Tracker'),
+          title: const Center(child: Text('Workout Tracker')),
+          shadowColor: Colors.black,
+          backgroundColor: Colors.grey[800],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: createNewWorkout,
+          backgroundColor: Colors.black,
           child: const Icon(Icons.add),
         ),
         body: ListView(
@@ -95,18 +125,54 @@ class _HomePageState extends State<HomePage> {
 
             //WORKOUT LIST
             ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: value.getWorkoutList().length,
-              itemBuilder: (context, index) => ListTile(
-                title: Text(value.getWorkoutList()[index].name),
-                trailing: IconButton(
-                  icon: const Icon(Icons.arrow_forward_ios),
-                  onPressed: () =>
-                      goToWorkoutPage(value.getWorkoutList()[index].name),
-                ),
-              ),
-            ),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: value.getWorkoutList().length,
+                itemBuilder: (context, index) {
+                  return Dismissible(
+                    key: ValueKey(value.getWorkoutList()[index].name),
+                    background: _buildDismissibleBackground(),
+                    direction:
+                        DismissDirection.endToStart, // Right to Left swipe
+                    onDismissed: (direction) {
+                      String deletedWorkoutName =
+                          value.getWorkoutList()[index].name;
+                      setState(() {
+                        value.getWorkoutList().removeAt(index);
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('$deletedWorkoutName deleted'),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 30.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[800],
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: InkWell(
+                        onTap: () =>
+                            goToWorkoutPage(value.getWorkoutList()[index].name),
+                        child: ListTile(
+                          contentPadding: EdgeInsets.all(16.0),
+                          title: Text(
+                            value.getWorkoutList()[index].name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
           ],
         ),
       ),

@@ -13,7 +13,7 @@ class ToDoPage extends StatefulWidget {
 
 class _ToDoPageState extends State<ToDoPage> {
   List todos = [];
-  final ApiClient apiClient = ApiClient('http://localhost:8080');
+  final ApiClient apiClient = ApiClient('http://10.0.2.2:8080');
 
   @override
   void initState() {

@@ -81,6 +81,16 @@ class WorkoutData extends ChangeNotifier {
 
     //check off boolean to show user compelted the exercise
     relevantExercise.isCompleted = !relevantExercise.isCompleted;
+
+    DateTime today = DateTime.now();
+    String todayString = convertDateTimeToYYYYMMDD(today);
+
+    if (relevantExercise.isCompleted) {
+      //If the exercise is completed, increate completionStatus for the day by 1
+      db.incrementCompletionStatus(todayString);
+    } else {
+      db.decrementCompletionStatus(todayString);
+    }
     print('tapped');
 
     notifyListeners();
