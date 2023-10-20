@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
+=======
+import 'package:provider/provider.dart';
+import 'package:workout_tracker_app/data/workout_data.dart';
+>>>>>>> f59f3cfa74a3b0360c4878a1369ac957f6d889df
 
 class EditDialog extends StatefulWidget {
   final Function(String) onEdit;
@@ -71,5 +76,9 @@ class _EditDialogState extends State<EditDialog> {
       Navigator.of(context).pop();
     }
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> f59f3cfa74a3b0360c4878a1369ac957f6d889df
 }
