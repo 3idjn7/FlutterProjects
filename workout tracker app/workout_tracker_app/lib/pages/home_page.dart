@@ -146,14 +146,25 @@ class _HomePageState extends State<HomePage> {
               onTap: () => goToWorkoutPage(workout.name),
               onLongPress: () => _showEditDialog(workout.name),
               child: ListTile(
-                contentPadding: const EdgeInsets.all(16.0),
+                leading: Image.asset('assets/weightlifting.png', height: 150.0),
+                contentPadding: const EdgeInsets.only(
+                  left: 18,
+                  top: 10,
+                  bottom: 10,
+                ),
                 title: Text(workout.name,
                     style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 18.0),
-                    textAlign: TextAlign.center),
-                trailing: const Icon(Icons.arrow_forward_ios),
+                    textAlign: TextAlign.left),
+                trailing: const Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 45.0,
+                  ),
+                ),
               ),
             ),
           ),
