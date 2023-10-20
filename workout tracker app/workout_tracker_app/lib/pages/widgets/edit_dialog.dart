@@ -71,9 +71,4 @@ class _EditDialogState extends State<EditDialog> {
       Navigator.of(context).pop();
     }
   }
-<<<<<<< HEAD
-
-=======
-  
->>>>>>> f59f3cfa74a3b0360c4878a1369ac957f6d889df
 }
