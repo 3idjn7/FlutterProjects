@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:workout_tracker_app/components/heat_map.dart';
 import 'package:workout_tracker_app/data/workout_data.dart';
+import 'package:workout_tracker_app/pages/widgets/edit_dialog.dart';
 import 'package:workout_tracker_app/pages/workout_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -100,6 +101,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void editWorkoutName(String initialName, int index) {
+    showDialog(
+      context: context,
+      builder: (context) => EditDialog(
+        initialText: initialName,
+        onEdit: (editedName) {
+          setState(() {
+            Provider.of<WorkoutData>(context, listen: false)
+                .updateWorkoutName(editedName, index as String);
+          });
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<WorkoutData>(
@@ -154,10 +170,14 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(5.0),
                       ),
                       child: InkWell(
+                        highlightColor: Colors.black,
                         onTap: () =>
                             goToWorkoutPage(value.getWorkoutList()[index].name),
+                        onLongPress: () {
+                          _showEditDialog(value.getWorkoutList()[index].name);
+                        },
                         child: ListTile(
-                          contentPadding: EdgeInsets.all(16.0),
+                          contentPadding: const EdgeInsets.all(16.0),
                           title: Text(
                             value.getWorkoutList()[index].name,
                             style: const TextStyle(
@@ -175,6 +195,38 @@ class _HomePageState extends State<HomePage> {
                 }),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showEditDialog(String initialName) {
+    final controller = TextEditingController(text: initialName);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Workout Name'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(hintText: "Workout Name"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              if (controller.text.isNotEmpty) {
+                Provider.of<WorkoutData>(context, listen: false)
+                    .updateWorkoutName(initialName, controller.text);
+                Navigator.of(context).pop();
+              }
+            },
+            child: const Text('Save'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancel'),
+          ),
+        ],
       ),
     );
   }
