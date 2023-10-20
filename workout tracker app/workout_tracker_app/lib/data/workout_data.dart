@@ -102,6 +102,21 @@ class WorkoutData extends ChangeNotifier {
     loadHeatMap();
   }
 
+  void updateWorkoutName(String oldName, String newName) {
+    // Finding the workout with the old name.
+    int indexToUpdate =
+        workoutList.indexWhere((workout) => workout.name == oldName);
+
+    // If the workout is found, update its name.
+    if (indexToUpdate != -1) {
+      workoutList[indexToUpdate].name = newName;
+
+      // Notify listeners to rebuild UI and save to database.
+      notifyListeners();
+      db.saveToDatabase(workoutList);
+    }
+  }
+
   //return relevant workout object, given a workout name
   Workout getRelevantWorkout(String workoutName) {
     Workout relevantWorkout =
