@@ -180,11 +180,12 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.grey[300],
         appBar: AppBar(
             title: const Center(child: Text('Workout Tracker')),
+            foregroundColor: Colors.white,
             shadowColor: Colors.black,
             backgroundColor: Colors.grey[800]),
         floatingActionButton: FloatingActionButton(
             onPressed: createNewWorkout,
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.grey[500],
             child: const Icon(Icons.add)),
         body: ListView(
           children: [_buildHeatMap(value), _buildWorkoutList(value)],

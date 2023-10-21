@@ -101,34 +101,84 @@ class _WorkoutPageState extends State<WorkoutPage> {
         ),
         body: ListView.builder(
           itemCount: value.numberOfExcercisesInWorkout(widget.workoutName),
-          itemBuilder: (context, index) => ExerciseTile(
-            exerciseName: value
+          itemBuilder: (context, index) => Dismissible(
+            key: ValueKey(value
                 .getRelevantWorkout(widget.workoutName)
                 .exercises[index]
-                .name,
-            weight: value
-                .getRelevantWorkout(widget.workoutName)
-                .exercises[index]
-                .weight,
-            reps: value
-                .getRelevantWorkout(widget.workoutName)
-                .exercises[index]
-                .reps,
-            sets: value
-                .getRelevantWorkout(widget.workoutName)
-                .exercises[index]
-                .sets,
-            isCompleted: value
-                .getRelevantWorkout(widget.workoutName)
-                .exercises[index]
-                .isCompleted,
-            onCheckBoxChanged: (val) => onCheckBoxChanged(
-              widget.workoutName,
-              value
-                  .getRelevantWorkout(widget.workoutName)
-                  .exercises[index]
-                  .name,
+                .name),
+            background: _buildDismissibleBackground(),
+            direction: DismissDirection.endToStart,
+            onDismissed: (direction) {
+              setState(() {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                        '${value.getRelevantWorkout(widget.workoutName).exercises[index].name} deleted')));
+                value
+                    .getRelevantWorkout(widget.workoutName)
+                    .exercises
+                    .removeAt(index);
+              });
+            },
+            child: Container(
+              margin:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
+              decoration: BoxDecoration(
+                color: Colors.grey[800],
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: ExerciseTile(
+                exerciseName: value
+                    .getRelevantWorkout(widget.workoutName)
+                    .exercises[index]
+                    .name,
+                weight: value
+                    .getRelevantWorkout(widget.workoutName)
+                    .exercises[index]
+                    .weight,
+                reps: value
+                    .getRelevantWorkout(widget.workoutName)
+                    .exercises[index]
+                    .reps,
+                sets: value
+                    .getRelevantWorkout(widget.workoutName)
+                    .exercises[index]
+                    .sets,
+                isCompleted: value
+                    .getRelevantWorkout(widget.workoutName)
+                    .exercises[index]
+                    .isCompleted,
+                onCheckBoxChanged: (val) => onCheckBoxChanged(
+                  widget.workoutName,
+                  value
+                      .getRelevantWorkout(widget.workoutName)
+                      .exercises[index]
+                      .name,
+                ),
+              ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container _buildDismissibleBackground() {
+    return Container(
+      margin: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+          color: Colors.red, borderRadius: BorderRadius.circular(5.0)),
+      child: const Align(
+        alignment: Alignment.centerRight,
+        child: Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Icon(Icons.delete, color: Colors.white),
+              Text(' Delete',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold))
+            ],
           ),
         ),
       ),

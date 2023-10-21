@@ -7,21 +7,25 @@ import 'package:workout_tracker_app/pages/home_page.dart';
 void main() async {
   //initialize hive
   await Hive.initFlutter();
-  
+
   //open a hive box
   await Hive.openBox("workout_database1");
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => WorkoutData(),
-      child: const MaterialApp(
-        home: HomePage(),
+      child: MaterialApp(
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primarySwatch: Colors.grey,
+        ),
+        home: const HomePage(),
       ),
     );
   }
