@@ -15,13 +15,13 @@ class MyHeatMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(25),
+      padding: const EdgeInsets.all(20),
       child: HeatMap(
         startDate: createDateTimeObject(startDateYYYYMMDD),
-        endDate: DateTime.now().add(const Duration(days: 29)),
+        endDate: DateTime.now().add(const Duration(days: 30)),
         datasets: datasets,
         colorMode: ColorMode.color,
-        defaultColor: Colors.grey[200],
+        defaultColor: Colors.grey[100],
         textColor: Colors.black,
         fontSize: 16,
         showColorTip: false,

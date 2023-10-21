@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey[300],
         title: const Text("Create new workout"),
         content: TextField(controller: newWorkoutNameController),
         actions: [
@@ -62,7 +63,7 @@ class _HomePageState extends State<HomePage> {
 
   Container _buildDismissibleBackground() {
     return Container(
-      margin: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
       decoration: BoxDecoration(
           color: Colors.red, borderRadius: BorderRadius.circular(5.0)),
       child: const Align(
@@ -76,6 +77,60 @@ class _HomePageState extends State<HomePage> {
               Text(' Delete',
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<bool> _showDeleteDialog(BuildContext context, String itemName) async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Delete?'),
+              content: Text('Do you want to delete $itemName?'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('No'),
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pop(false); // User chose NOT to delete.
+                  },
+                ),
+                TextButton(
+                  child: const Text('Yes'),
+                  onPressed: () {
+                    Navigator.of(context).pop(true); // User chose to delete.
+                  },
+                ),
+              ],
+            );
+          },
+        ) ??
+        false; // If the user dismisses the dialog by clicking outside, it will return false.
+  }
+
+  Container _buildNavigateBackground() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
+      decoration: BoxDecoration(
+          color: Colors.green, borderRadius: BorderRadius.circular(5.0)),
+      child: const Align(
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: EdgeInsets.only(left: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(Icons.arrow_forward_ios, color: Colors.white),
+              Text(' Open',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
+                  ))
             ],
           ),
         ),
@@ -127,14 +182,26 @@ class _HomePageState extends State<HomePage> {
         var workout = value.getWorkoutList()[index];
         return Dismissible(
           key: ValueKey(workout.name),
-          background: _buildDismissibleBackground(),
-          direction: DismissDirection.endToStart, // Right to Left swipe
+          background: _buildNavigateBackground(),
+          secondaryBackground: _buildDismissibleBackground(),
+          confirmDismiss: (direction) async {
+            if (direction == DismissDirection.endToStart) {
+              return await _showDeleteDialog(context, workout.name);
+            }
+            if (direction == DismissDirection.startToEnd) {
+              goToWorkoutPage(workout.name);
+              return false; // We don't want to actually dismiss the item here.
+            }
+            return false;
+          },
           onDismissed: (direction) {
-            setState(() {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${workout.name} deleted')));
-              value.getWorkoutList().removeAt(index);
-            });
+            if (direction == DismissDirection.endToStart) {
+              setState(() {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${workout.name} deleted')));
+                value.deleteWorkout(workout.name);
+              });
+            }
           },
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
@@ -179,6 +246,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context, value, child) => Scaffold(
         backgroundColor: Colors.grey[300],
         appBar: AppBar(
+            automaticallyImplyLeading: false,
             title: const Center(child: Text('Workout Tracker')),
             foregroundColor: Colors.white,
             shadowColor: Colors.black,

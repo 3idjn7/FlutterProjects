@@ -74,6 +74,39 @@ class WorkoutData extends ChangeNotifier {
     db.saveToDatabase(workoutList);
   }
 
+  void deleteWorkout(String workoutName) {
+    // Find the index of the workout to delete.
+    int indexToDelete =
+        workoutList.indexWhere((workout) => workout.name == workoutName);
+
+    // If the workout is found, remove it from the list.
+    if (indexToDelete != -1) {
+      workoutList.removeAt(indexToDelete);
+
+      // Notify listeners to rebuild UI and save to database.
+      notifyListeners();
+      db.saveToDatabase(workoutList);
+    }
+  }
+
+  void deleteExercise(String workoutName, String exerciseName) {
+    // Find the relevant workout.
+    Workout relevantWorkout = getRelevantWorkout(workoutName);
+
+    // Find the index of the exercise to delete.
+    int indexToDelete = relevantWorkout.exercises
+        .indexWhere((exercise) => exercise.name == exerciseName);
+
+    // If the exercise is found, remove it from the list.
+    if (indexToDelete != -1) {
+      relevantWorkout.exercises.removeAt(indexToDelete);
+
+      // Notify listeners to rebuild UI and save to database.
+      notifyListeners();
+      db.saveToDatabase(workoutList);
+    }
+  }
+
   //check off excercise
   void checkOffExercise(String workoutName, String exerciseName) {
     //find the relevant workout and relevant exercise in that workout
