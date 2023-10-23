@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
           shape: BoxShape.circle,
         ),
         child: const Center(
-          child: Icon(Icons.sunny, size: 40),
+          child: Icon(Icons.cloud, size: 40),
         ),
       ),
     );
